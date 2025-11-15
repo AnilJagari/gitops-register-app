@@ -2,13 +2,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: register-app-service
-  labels:
-    app: register-app
 spec:
   selector:
     app: register-app
+  type: NodePort
   ports:
-    - port: 8080       # internal cluster port
-      targetPort: 8080 # port your container listens on
-      nodePort: 30080  # external port on your PC
-  type: NodePort       # Use NodePort for Minikube
+    - port: 8080       # Service port
+      targetPort: 8080 # Container port
+      nodePort: 30080  # NodePort to access outside Minikube
