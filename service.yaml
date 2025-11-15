@@ -7,8 +7,8 @@ metadata:
 spec:
   selector:
     app: register-app
-  type: NodePort       # NodePort so you can access it from your host
+  type: NodePort
   ports:
-    - port: 8080       # internal cluster port
-      targetPort: 8080 # port your container listens on
-      nodePort: 30080  # external port on your PC
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30080
