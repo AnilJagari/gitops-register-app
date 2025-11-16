@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: register-app
-          image: aniljagari/register-app:latest  # replace with your Docker image
+          image: aniljagari/register-app-pipeline:latest  # replace with your Docker image
           ports:
             - containerPort: 8080
