@@ -1,10 +1,12 @@
 pipeline {
     agent { label "Jenkins-Agent" }
+
     environment {
-              APP_NAME = "register-app-pipeline"
+        APP_NAME = "register-app-pipeline"
     }
 
     stages {
+
         stage("Cleanup Workspace") {
             steps {
                 cleanWs()
@@ -12,39 +14,43 @@ pipeline {
         }
 
         stage("Checkout from SCM") {
-               steps {
-                   git branch: 'main', credentialsId: 'github', url: 'https://github.com/AnilJagari/gitops-register-app'
-               }
-        }
-
-        stage("Update the Deployment Tags") {
             steps {
-                sh """
-                   cat deployment.yaml
-                   sed -i 's/${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' deployment.yaml
-                   cat deployment.yaml
-                """
+                git branch: 'main', credentialsId: 'github', url: 'https://github.com/AnilJagari/gitops-register-app.git'
             }
         }
 
-        stage("Push the changed deployment file to Git") {
+        stage("Update Deployment YAML with New Image Tag") {
             steps {
-                sh """
-                   git config --global user.name "AnilJagari"
-                   git config --global user.email "aniljagari111@gmail.com"
-                   git add deployment.yaml
-                   git commit -m "Updated Deployment Manifest"
-                """
-                  withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
                 sh '''
-                     git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/AnilJagari/gitops-register-app.git main
-                   '''
-}
+                    echo "Before update:"
+                    cat deployment.yaml
 
-                    
+                    sed -i "s|image: .*|image: ${APP_NAME}:${IMAGE_TAG}|g" deployment.yaml
+
+                    echo "After update:"
+                    cat deployment.yaml
+                '''
+            }
+        }
+
+        stage("Push Updated Manifest to GitHub") {
+            steps {
+
+                sh '''
+                    git config user.name "AnilJagari"
+                    git config user.email "aniljagari111@gmail.com"
+                '''
+
+                withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
+
+                    sh '''
+                        git add deployment.yaml || true
+                        git commit -m "Updated Deployment Manifest" || true
+
+                        git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/AnilJagari/gitops-register-app.git main
+                    '''
                 }
             }
         }
-      
     }
 }
