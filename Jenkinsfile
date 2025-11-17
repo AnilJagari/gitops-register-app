@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         APP_NAME = "register-app-pipeline"
+        DOCKER_USER = "aniljagari"
     }
 
     stages {
@@ -25,7 +26,8 @@ pipeline {
                     echo "Before update:"
                     cat deployment.yaml
 
-                    sed -i "s|image: .*|image: ${APP_NAME}:${IMAGE_TAG}|g" deployment.yaml
+                    sed -i "s|image: .*|image: ${DOCKER_USER}/${APP_NAME}:${IMAGE_TAG}|g" deployment.yaml
+
 
                     echo "After update:"
                     cat deployment.yaml
