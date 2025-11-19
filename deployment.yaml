@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: register-app
-          image: aniljagari/register-app-pipeline:1.0.0-47
+          image: aniljagari/register-app-pipeline:1.0.0-48
           ports:
             - containerPort: 8080
