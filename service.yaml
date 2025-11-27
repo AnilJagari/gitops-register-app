@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: register-app-service
 spec:
+  type: ClusterIP
   selector:
     app: register-app
   ports:
-    - protocol: TCP
-      port: 8080
-      targetPort: 8080
-  type: NodePort   # no nodePort field, let Kubernetes assign automatically
+    - name: http
+      port: 80         # Service port (internal)
+      targetPort: 8080 # MUST match containerPort in Deployment
